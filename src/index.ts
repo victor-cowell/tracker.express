@@ -1,7 +1,7 @@
 import express, { Express, Request, Response } from 'express';
 
 const app: Express = express();
-const port = 8000;
+const port = parseInt(process.env.PORT!);
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Server is running');

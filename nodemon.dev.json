@@ -6,7 +6,8 @@
     "ts": "node -r ts-node/register"
   },
   "env": {
-    "NODE_ENV": "dev"
+    "NODE_ENV": "dev",
+    "PORT": 8000
   },
   "ext": "ts"
 }
