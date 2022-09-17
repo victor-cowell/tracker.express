@@ -10,5 +10,8 @@
     "TEMPLATE_SERVICE_PORT": 8000,
     "TRACKER_SERVICE_PORT": 8001
   },
-  "ext": "ts"
+  "events": {
+    "restart": "npm run build:snippet"
+  },
+  "ext": "ts,html"
 }
