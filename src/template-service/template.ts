@@ -1,5 +1,6 @@
 import express, { Express, Request, Response } from 'express';
 import path from 'path';
+import { ServiceInterface } from '../app.interfaces';
 
 const app: Express = express();
 const port = parseInt(process.env.TEMPLATE_SERVICE_PORT!);
@@ -13,7 +14,7 @@ app.get('/', sendTemplate);
 app.get('/1.html', sendTemplate);
 app.get('/2.html', sendTemplate);
 
-export const templateService = {
+export const templateService: ServiceInterface = {
   name: 'Template Service',
   app,
   port
