@@ -1,10 +1,16 @@
-class Tracker {
-  constructor() {
-    console.log('tracker');
-  }
+class TrackerI {
+  constructor() {}
 
-  track(str: string) {
-    console.log(str);
+  track(event: any, ...tags: string[]): void {
+    const trackerEvent: any = {
+      event,
+      tags,
+      url: window.location.href,
+      title: document.title,
+      // TODO need to recheck how it works with database
+      ts: new Date().toLocaleDateString(),
+    };
+    console.log(trackerEvent);
   }
 }
-const tracker = new Tracker();
+const tracker = new TrackerI();
