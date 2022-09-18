@@ -10,6 +10,7 @@ const allowedOrigins = ['http://localhost:8000'];
 const options: cors.CorsOptions = {
   origin: allowedOrigins
 };
+
 app.use(cors(options));
 app.use(express.json());
 app.use('/', testRouter)

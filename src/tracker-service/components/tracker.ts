@@ -1,31 +1,66 @@
 class Tracker {
-  eventsBuffer: any[] = [];
-  isDelayed: boolean = false;
+  private eventsBuffer: any[] = [];
+  private sendingEventsBuffer: any[] = [];
+  private isDelayed: boolean = false;
+  private readonly eventsLSKey = 'trackEvents';
 
-  track(event: any, ...tags: string[]): Promise<void> | void {
-    this.addEventToBuffer(event, tags);
-    console.log(this.isDelayed);
-    console.log(this.eventsBuffer);
-    if (this.eventsBuffer.length < 3 || this.isDelayed) {
-      return;
-    }
-    this.isDelayed = true;
-    return this.sendEvents();
+  constructor() {
+    this.initData();
+    window.onunload = this.onunload;
+    window.addEventListener('online', this.sendEventsWithDelay);
   }
 
-  async sendEvents(): Promise<void> {
-    if (!this.eventsBuffer.length) {
-      return;
-    }
-    const events = [...this.eventsBuffer];
-    this.eventsBuffer = [];
-    await this.sendEventsRequest(events);
-    setInterval(() => {
-      if (this.eventsBuffer.length && this.isDelayed) {
-        console.log('Sending delayed events');
-        console.log(this.eventsBuffer);
-        this.sendEvents();
+  async track(event: any, ...tags: string[]): Promise<void> {
+    this.addEventToBuffer(event, tags);
+    await this.sendEventsWithDelay();
+  }
+
+  async sendEventsWithDelay() {
+    try {
+      if (!this.eventsBuffer.length || this.eventsBuffer.length < 3 || this.isDelayed) {
         return;
+      }
+      this.isDelayed = true;
+      await this.sendEvents();
+      this.setDelay();
+    } catch (e) {
+      this.isDelayed = false;
+      this.moveEventsToBuffer();
+    }
+  }
+
+  async onunload() {
+    try {
+      await this.sendEvents();
+    } catch (e) {
+      this.moveEventsToBuffer();
+      localStorage.setItem(this.eventsLSKey, JSON.stringify(this.eventsBuffer));
+    }
+  }
+
+  private initData() {
+    const lsEvents = localStorage.getItem(this.eventsLSKey);
+    console.log(lsEvents);
+    if (lsEvents) {
+      const events = JSON.parse(lsEvents);
+      this.eventsBuffer.push(...events);
+      localStorage.removeItem(this.eventsLSKey);
+    }
+  }
+
+  private async sendEvents(): Promise<void> {
+    console.log('send events', this.eventsBuffer);
+    this.setSendingBuffer();
+    await this.sendEventsRequest();
+  }
+
+  private setDelay() {
+    setTimeout( async () => {
+      console.log('delay callback')
+      if (this.eventsBuffer.length > 3) {
+        this.isDelayed = false;
+        console.log('Sending delayed events');
+        return await this.sendEventsWithDelay();
       }
       this.isDelayed = false;
     }, 1000);
@@ -39,21 +74,27 @@ class Tracker {
       title: document.title,
       ts: new Date().toISOString(),
     };
+    console.log('adding event to buffer', trackerEvent);
     this.eventsBuffer.push(trackerEvent);
   }
 
-  private async sendEventsRequest(events: any[]) {
-    await fetch('http://localhost:8001/track', {
+  private sendEventsRequest(): Promise<Response> {
+    return fetch('http://localhost:8001/track', {
       method: 'POST',
-      body: JSON.stringify(events),
+      body: JSON.stringify(this.sendingEventsBuffer),
       headers: { 'Content-Type': 'application/json' }
     });
+  }
+
+  private setSendingBuffer() {
+    this.sendingEventsBuffer = [...this.eventsBuffer];
+    this.eventsBuffer = [];
+  }
+
+  private moveEventsToBuffer() {
+    this.eventsBuffer.push(...this.sendingEventsBuffer);
+    this.sendingEventsBuffer = [];
   }
 }
 
 const tracker = new Tracker();
-// TODO if we get error we couldn't save events anywhere. need to check how we can change it
-window.onbeforeunload = ()=> {
-  window.onbeforeunload = null;
-  tracker.sendEvents.apply(tracker);
-}
