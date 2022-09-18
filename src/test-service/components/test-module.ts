@@ -1,4 +1,5 @@
 class TestModule {
+  private readonly endpoint = 'http://localhost:8002/events';
   async testTrackDelay(firstClicksCount: number, secondClicksCount: number): Promise<void> {
     this.repeatableClick(firstClicksCount);
     await new Promise(res => setTimeout(res, 100));
@@ -32,9 +33,9 @@ class TestModule {
   }
 
   private sendRequest(method: 'GET' | 'DELETE'): Promise<Response> {
-    return fetch('http://localhost:8002/events', {
+    return fetch(this.endpoint, {
       method,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
     });
   }
 }

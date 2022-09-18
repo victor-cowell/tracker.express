@@ -13,7 +13,7 @@ const options: cors.CorsOptions = {
 
 app.use(cors(options));
 app.use(express.json());
-app.use('/', testRouter)
+app.use('/', testRouter);
 export const testService: Service = {
   name: 'Test Service',
   app,
