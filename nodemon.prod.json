@@ -6,13 +6,13 @@
     "ts": "node -r ts-node/register"
   },
   "env": {
-    "NODE_ENV": "dev",
+    "NODE_ENV": "prod",
     "TEMPLATE_SERVICE_PORT": 8000,
     "TRACKER_SERVICE_PORT": 8001,
     "TEST_SERVICE_PORT": 8002
   },
   "events": {
-    "restart": "npm run build:snippets"
+    "restart": "npm run build:tracker"
   },
   "ext": "ts,html"
 }

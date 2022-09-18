@@ -1,10 +1,13 @@
 import { Request, Response } from 'express';
+import { TrackerEventModel } from '../../models/trackerEvent';
 import { TrackerEvent } from '../tracker.interface';
 
-export const trackEvents = (req: Request<null, TrackerEvent[], TrackerEvent[]>, res: Response) => {
-  console.log(req.body);
+export const trackEvents = async (req: Request<null, TrackerEvent[], TrackerEvent[]>, res: Response) => {
+  console.log('trackEvents', req.body?.length);
+  res.status(200)
+  res.send();
   const validEvents = req.body.filter(validateEvent);
-  res.send(validEvents);
+  await TrackerEventModel.collection.insertMany(validEvents);
 }
 
 function validateEvent(event: TrackerEvent): boolean {

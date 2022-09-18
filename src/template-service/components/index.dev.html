@@ -1,0 +1,26 @@
+<html>
+<head>
+  <title>Demo page</title>
+  <script src="http://localhost:8001/"></script>
+  <script src="http://localhost:8002/"></script>
+  <script>
+    tracker.track('pageview');
+    tracker.track('test', 'one', 'two', 'three');
+  </script>
+</head>
+<body>
+<button onclick="tracker.track('click-button')">Click me</button>
+<button onclick="testModule.testTrackDelay(5, 10)">Test delay</button>
+<button class="click-me-button"
+        onclick="tracker.track('click-test-button', '1', '2', '3', '4', '5')">
+  Test click
+</button>
+<button onclick="testModule.getEvents()">Get Events</button>
+<button onclick="testModule.deleteEvents()">Delete Events</button>
+<ul>
+  <li><a href="/" onclick="tracker.track('click-link', 'root')">Root</a></li>
+  <li><a href="/1.html" onclick="tracker.track('click-link', '1')">1.html</a></li>
+  <li><a href="/2.html" onclick="tracker.track('click-link', '2')">2.html</a></li>
+</ul>
+</body>
+</html>
