@@ -7,9 +7,9 @@
   },
   "env": {
     "NODE_ENV": "prod",
-    "TEMPLATE_SERVICE_PORT": 8000,
-    "TRACKER_SERVICE_PORT": 8001,
-    "TEST_SERVICE_PORT": 8002
+    "TEMPLATE_SERVICE_PORT": 8100,
+    "TRACKER_SERVICE_PORT": 8101,
+    "TEST_SERVICE_PORT": 8102
   },
   "events": {
     "restart": "npm run build:tracker"

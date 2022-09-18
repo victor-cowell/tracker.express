@@ -1,5 +1,9 @@
 class TestModule {
-  private readonly endpoint = 'http://localhost:8002/events';
+  private readonly endpoint: string;
+  constructor() {
+    const host = this.getHost('2');
+    this.endpoint = `${host}/events`;
+  }
   async testTrackDelay(firstClicksCount: number, secondClicksCount: number): Promise<void> {
     this.repeatableClick(firstClicksCount);
     await new Promise(res => setTimeout(res, 100));
@@ -26,7 +30,7 @@ class TestModule {
     button.click();
   }
 
-  private repeatableClick(times: number) {
+  private repeatableClick(times: number): void {
     for (let i = 0; i < times; i++) {
       this.clickOnButton();
     }
@@ -37,6 +41,12 @@ class TestModule {
       method,
       headers: { 'Content-Type': 'application/json' },
     });
+  }
+
+  private getHost(apiPortNumber: string) {
+    const { protocol, hostname, port } = window.location;
+    const trackerPort = port.replace(/0$/, apiPortNumber);
+    return `${protocol}//${hostname}:${trackerPort}`;
   }
 }
 

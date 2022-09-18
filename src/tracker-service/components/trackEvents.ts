@@ -6,22 +6,10 @@ export const trackEvents = async (req: Request<null, TrackerEvent[], TrackerEven
   console.log('trackEvents', req.body?.length);
   res.status(200);
   res.send();
-  const events = req.body.map((data: TrackerEvent)=> new TrackEventImp(data));
-  const validEvents = events.filter((event)=> event.validate());
+  const events: TrackEventImp[] = req.body.map((data: TrackerEvent)=> new TrackEventImp(data));
+  const validEvents: TrackEventImp[] = events.filter((event)=> event.validate());
   await TrackerEventModel.collection.insertMany(validEvents);
 };
-
-function validateEvent(event: TrackerEvent): boolean {
-  const eventKeys = Object.keys(event) as Array<keyof TrackerEvent>;
-  const requestedKeys: string[] = ['event', 'tags', 'url', 'title', 'ts'];
-  for (const key of eventKeys) {
-    if (!requestedKeys.includes(key) || !event[key]) {
-      return false;
-    }
-  }
-  // const eventsTypes = ['page-view', 'click-button', 'click-link', 'test', 'click-test-button];
-  return true;
-}
 
 class TrackEventImp implements TrackerEvent {
   event: TrackerEventType;
@@ -38,7 +26,7 @@ class TrackEventImp implements TrackerEvent {
     this.ts = trackEvent.ts;
   }
 
-  validate() {
+  validate(): boolean {
     if (!this.event || !this.tags || !this.url || !this.title || !this.ts) {
       return false;
     }

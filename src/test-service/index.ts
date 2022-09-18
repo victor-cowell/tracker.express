@@ -6,7 +6,7 @@ import { testRouter } from './test.router';
 const app: Express = express();
 const port = parseInt(process.env.TEST_SERVICE_PORT!);
 
-const allowedOrigins = ['http://localhost:8000'];
+const allowedOrigins = [`http://localhost:${process.env.TEMPLATE_SERVICE_PORT}`];
 const options: cors.CorsOptions = {
   origin: allowedOrigins
 };

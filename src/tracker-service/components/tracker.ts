@@ -1,12 +1,30 @@
-class Tracker {
-  private eventsBuffer: any[] = [];
-  private sendingEventsBuffer: any[] = [];
+interface Tracker {
+  track(event: string, ...tags: string[]): void;
+}
+
+interface TrackerEvent {
+  event: TrackerEventType;
+  tags: string[];
+  url: string;
+  title: string;
+  ts: Date;
+}
+
+type TrackerEventType = 'page-view' | 'click-button' | 'click-link' | 'test';
+
+class TrackerI implements Tracker {
+  private eventsBuffer: TrackerEvent[] = [];
+  private sendingEventsBuffer: TrackerEvent[] = [];
   private isDelayed: boolean = false;
   private readonly eventsLSKey = 'trackEvents';
+  private readonly host: string;
 
   constructor() {
+    this.host = this.getHost('1');
     this.initData();
-    window.onunload = this.onunload;
+    window.onbeforeunload = () => {
+      this.onunload();
+    };
     window.addEventListener('online', this.sendEventsWithDelay);
   }
 
@@ -15,7 +33,7 @@ class Tracker {
     await this.sendEventsWithDelay();
   }
 
-  async sendEventsWithDelay() {
+  async sendEventsWithDelay(): Promise<void> {
     try {
       if (!this.eventsBuffer.length || this.eventsBuffer.length < 3 || this.isDelayed) {
         return;
@@ -29,8 +47,11 @@ class Tracker {
     }
   }
 
-  async onunload() {
+  async onunload(): Promise<void> {
     try {
+      if (!this.eventsBuffer.length) {
+        return;
+      }
       await this.sendEvents();
     } catch (e) {
       this.moveEventsToBuffer();
@@ -38,7 +59,7 @@ class Tracker {
     }
   }
 
-  private initData() {
+  private initData(): void {
     const lsEvents = localStorage.getItem(this.eventsLSKey);
     console.log(lsEvents);
     if (lsEvents) {
@@ -54,9 +75,9 @@ class Tracker {
     await this.sendEventsRequest();
   }
 
-  private setDelay() {
-    setTimeout( async () => {
-      console.log('delay callback')
+  private setDelay(): void {
+    setTimeout(async () => {
+      console.log('delay callback');
       if (this.eventsBuffer.length > 3) {
         this.isDelayed = false;
         console.log('Sending delayed events');
@@ -66,7 +87,7 @@ class Tracker {
     }, 1000);
   }
 
-  private addEventToBuffer(event: any, tags: string[]) {
+  private addEventToBuffer(event: any, tags: string[]): void {
     const trackerEvent: any = {
       event,
       tags,
@@ -79,22 +100,29 @@ class Tracker {
   }
 
   private sendEventsRequest(): Promise<Response> {
-    return fetch('http://localhost:8001/track', {
+    return fetch(`${this.host}/track`, {
       method: 'POST',
       body: JSON.stringify(this.sendingEventsBuffer),
       headers: { 'Content-Type': 'application/json' }
     });
   }
 
-  private setSendingBuffer() {
+  private setSendingBuffer(): void {
     this.sendingEventsBuffer = [...this.eventsBuffer];
     this.eventsBuffer = [];
   }
 
-  private moveEventsToBuffer() {
+  private moveEventsToBuffer(): void {
     this.eventsBuffer.push(...this.sendingEventsBuffer);
     this.sendingEventsBuffer = [];
   }
+
+  private getHost(apiPortNumber: string) {
+    const { protocol, hostname, port } = window.location;
+    const trackerPort = port.replace(/0$/, apiPortNumber);
+    return `${protocol}//${hostname}:${trackerPort}`;
+  }
+
 }
 
-const tracker = new Tracker();
+const tracker = new TrackerI();

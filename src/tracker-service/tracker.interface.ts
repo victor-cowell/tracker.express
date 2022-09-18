@@ -9,7 +9,4 @@ export interface TrackerEvent {
 
 export type TrackerEventType = 'page-view' | 'click-button' | 'click-link' | 'test';
 
-export interface Tracker {
-  track(event: string, ...tags: string[]): void
-}
 
