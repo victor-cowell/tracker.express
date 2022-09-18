@@ -103,7 +103,7 @@ class TrackerI implements Tracker {
     return fetch(`${this.host}/track`, {
       method: 'POST',
       body: JSON.stringify(this.sendingEventsBuffer),
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
     });
   }
 
@@ -122,7 +122,6 @@ class TrackerI implements Tracker {
     const trackerPort = port.replace(/0$/, apiPortNumber);
     return `${protocol}//${hostname}:${trackerPort}`;
   }
-
 }
 
 const tracker = new TrackerI();

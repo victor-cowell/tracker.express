@@ -8,7 +8,7 @@ const port = parseInt(process.env.TEST_SERVICE_PORT!);
 
 const allowedOrigins = [`http://localhost:${process.env.TEMPLATE_SERVICE_PORT}`];
 const options: cors.CorsOptions = {
-  origin: allowedOrigins
+  origin: allowedOrigins,
 };
 
 app.use(cors(options));
@@ -17,5 +17,5 @@ app.use('/', testRouter);
 export const testService: Service = {
   name: 'Test Service',
   app,
-  port
+  port,
 };

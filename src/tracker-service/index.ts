@@ -8,14 +8,14 @@ const port = parseInt(process.env.TRACKER_SERVICE_PORT!);
 
 const allowedOrigins = [`http://localhost:${process.env.TEMPLATE_SERVICE_PORT}`];
 const options: cors.CorsOptions = {
-  origin: allowedOrigins
+  origin: allowedOrigins,
 };
 app.use(cors(options));
 app.use(express.json());
-app.use('/', trackerRouter)
+app.use('/', trackerRouter);
 
 export const trackerService: Service = {
   name: 'Tracker Service',
   app,
-  port
+  port,
 };

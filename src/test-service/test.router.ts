@@ -6,5 +6,3 @@ export const testRouter = Router();
 testRouter.get('/', getTestModule);
 testRouter.get('/events', getEvents);
 testRouter.delete('/events', deleteEvents);
-
-

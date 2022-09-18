@@ -10,5 +10,5 @@ app.use('/', templateRouter);
 export const templateService: Service = {
   name: 'Template Service',
   app,
-  port
+  port,
 };

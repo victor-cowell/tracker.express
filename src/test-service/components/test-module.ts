@@ -6,7 +6,7 @@ class TestModule {
   }
   async testTrackDelay(firstClicksCount: number, secondClicksCount: number): Promise<void> {
     this.repeatableClick(firstClicksCount);
-    await new Promise(res => setTimeout(res, 100));
+    await new Promise((res) => setTimeout(res, 100));
     this.repeatableClick(secondClicksCount);
   }
 

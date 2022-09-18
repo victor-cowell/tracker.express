@@ -13,7 +13,5 @@ if (process.env.NODE_ENV === 'dev') {
 connect('mongodb://localhost:27017').catch((e) => console.log(`Dynamo connect error: ${e}`));
 
 function runService(service: Service): void {
-  service.app.listen(service.port,
-    () => console.log(`${service.name} is running on ${service.port} port`)
-  );
+  service.app.listen(service.port, () => console.log(`${service.name} is running on ${service.port} port`));
 }

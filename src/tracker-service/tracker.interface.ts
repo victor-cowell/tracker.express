@@ -1,4 +1,3 @@
-
 export interface TrackerEvent {
   event: TrackerEventType;
   tags: string[];
@@ -8,5 +7,3 @@ export interface TrackerEvent {
 }
 
 export type TrackerEventType = 'page-view' | 'click-button' | 'click-link' | 'test';
-
-

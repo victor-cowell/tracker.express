@@ -5,5 +5,3 @@ import { trackEvents } from './components/trackEvents';
 export const trackerRouter = Router();
 trackerRouter.get('/', getTracker);
 trackerRouter.post('/track', trackEvents);
-
-

@@ -6,8 +6,8 @@ export const trackEvents = async (req: Request<null, TrackerEvent[], TrackerEven
   console.log('trackEvents', req.body?.length);
   res.status(200);
   res.send();
-  const events: TrackEventImp[] = req.body.map((data: TrackerEvent)=> new TrackEventImp(data));
-  const validEvents: TrackEventImp[] = events.filter((event)=> event.validate());
+  const events: TrackEventImp[] = req.body.map((data: TrackerEvent) => new TrackEventImp(data));
+  const validEvents: TrackEventImp[] = events.filter((event) => event.validate());
   await TrackerEventModel.collection.insertMany(validEvents);
 };
 
@@ -30,11 +30,10 @@ class TrackEventImp implements TrackerEvent {
     if (!this.event || !this.tags || !this.url || !this.title || !this.ts) {
       return false;
     }
-    if(!Array.isArray(this.tags)){
+    if (!Array.isArray(this.tags)) {
       return false;
     }
     const date = new Date(this.ts).getTime();
     return !isNaN(date);
-
   }
 }
