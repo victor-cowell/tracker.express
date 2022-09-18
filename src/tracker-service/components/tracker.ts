@@ -25,7 +25,7 @@ class TrackerI implements Tracker {
     window.onbeforeunload = () => {
       this.onunload();
     };
-    window.addEventListener('online', this.sendEventsWithDelay);
+    window.addEventListener('online', this.sendEventsWithDelay.bind(this));
   }
 
   async track(event: any, ...tags: string[]): Promise<void> {
